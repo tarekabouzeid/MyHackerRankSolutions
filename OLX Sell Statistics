@@ -1,0 +1,248 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static class OLXSoldItem
+    {
+        private int product_id;
+        private int category_id;
+        private int state_id;  
+        private int region_id;
+        
+        
+        OLXSoldItem(int prd_id,int ctg_id,int stt_id,int reg_id)
+        {
+            this.product_id = prd_id;
+            this.category_id =ctg_id;
+            this.state_id = stt_id;
+            this.region_id = reg_id;
+        }
+        
+        int get_product_id()
+        {
+            return this.product_id;
+        }
+        int category_id()
+        {
+            return this.category_id;
+        }
+        int state_id()
+        {
+            return this.state_id;
+        }
+        int region_id()
+        {
+            return this.region_id;
+        }
+        
+        boolean matches_query(int prd_id,int ctg_id,int stt_id,int reg_id)
+        {
+            if(prd_id==-1&&stt_id==-1)
+            {
+                //get everything
+                return true;
+            }
+            else if(prd_id==-1&&stt_id!=-1)
+            {
+                //get all products and category , check for state and region
+                if(reg_id==-1)
+                {
+                    //search using stt_id only
+                    return (this.state_id==stt_id);
+                }
+                else
+                {
+                    //search using stt_id and reg_id
+                    return (this.state_id==stt_id && this.region_id==reg_id);
+                }
+            }
+            else if(prd_id!=-1&&stt_id==-1)
+            {
+               if(ctg_id==-1)
+               {
+                 //  System.out.println("this.product_id:"+this.product_id+"prod_id,:"+prd_id);
+                   //search using prd_id only
+                   return (this.product_id == prd_id);
+               }
+                else
+                {
+                    //search using prd_id and ctg_id
+                    return (this.product_id == prd_id && this.category_id == ctg_id);
+                }
+            }
+            else if(prd_id!=-1&&stt_id!=-1)
+            {
+                //check for everything
+                if(ctg_id==-1&&reg_id==-1)
+                {
+                    //search using prd_id and stt_id ONLY
+                    return (this.product_id == prd_id && this.state_id==stt_id);
+                }
+                else if(ctg_id==-1&&reg_id!=-1)
+                {
+                    //search using reg_id and prd_id and stt_id
+                    return (this.region_id ==reg_id && this.product_id ==prd_id && this.state_id == stt_id);
+                }
+                else if(ctg_id!=-1&&reg_id!=-1)
+                {
+                    //search using prd_id and stt_id and ctg_id and reg_id
+                    return (this.region_id ==reg_id && this.product_id ==prd_id && this.state_id == stt_id && this.category_id ==ctg_id);
+                }
+                else if(ctg_id!=-1&&reg_id==-1)
+                {
+                    //check all but not reg_id
+                    return (this.product_id==prd_id && this.category_id==ctg_id && this.state_id==stt_id);
+                }
+            }
+            return false;
+        }
+    }
+    
+    public static int query(ArrayList<OLXSoldItem> items_arr,int prd_id,int ctg_id,int stt_id,int reg_id)
+    {
+        int result = 0;
+        for(int i=0;i<items_arr.size();i++)
+        {
+            if(items_arr.get(i).matches_query( prd_id, ctg_id, stt_id, reg_id))
+                result++;
+        }
+        return result;
+    }
+    
+    public static int[]parse_sell(String input)
+    {
+        String[] input_splited = input.split(" ");// 0 1 2
+        int day = Integer.parseInt(input_splited[0]);
+        int p_id = -1;
+        int c_id = -1;
+        int s_id = -1;
+        int r_id = -1;
+        if(input_splited[1].indexOf('.')!=-1)
+        {
+            p_id = Integer.parseInt(input_splited[1].substring(0,input_splited[1].indexOf('.')));
+            c_id = Integer.parseInt(input_splited[1].substring(input_splited[1].indexOf('.')+1));//optional
+        }
+        else
+        {
+            p_id = Integer.parseInt(input_splited[1]);
+        }
+        if(input_splited[2].indexOf('.')!=-1)
+        {
+            s_id = Integer.parseInt(input_splited[2].substring(0,input_splited[2].indexOf('.')));
+            r_id = Integer.parseInt(input_splited[2].substring(input_splited[2].indexOf('.')+1));//optional
+        }
+        else
+        {
+            s_id= Integer.parseInt(input_splited[2]);
+        }
+        int[] output = {day,p_id,c_id,s_id,r_id};
+        return output;
+    }
+    
+    public static int[]parse_query(String input)
+    {
+        String[] input_splited = input.split(" ");// 0 1 2 
+        int s_day =-1;
+        int e_day =-1;
+        int p_id = -1;
+        int c_id = -1;
+        int s_id = -1;
+        int r_id = -1;
+        if(input_splited[0].indexOf('.')!=-1)
+        {
+            s_day = Integer.parseInt(input_splited[0].substring(0,input_splited[0].indexOf('.')));
+            e_day = Integer.parseInt(input_splited[0].substring(input_splited[0].indexOf('.')+1));//optional
+        }
+        else
+        {
+            s_day = Integer.parseInt(input_splited[0]);
+        }
+        
+        if(input_splited[1].indexOf('.')!=-1)
+        {
+            p_id = Integer.parseInt(input_splited[1].substring(0,input_splited[1].indexOf('.')));
+            c_id = Integer.parseInt(input_splited[1].substring(input_splited[1].indexOf('.')+1));//optional
+        }
+        else
+        {
+            p_id = Integer.parseInt(input_splited[1]);
+        }
+        if(input_splited[2].indexOf('.')!=-1)
+        {
+            s_id = Integer.parseInt(input_splited[2].substring(0,input_splited[2].indexOf('.')));
+            r_id = Integer.parseInt(input_splited[2].substring(input_splited[2].indexOf('.')+1));//optional
+        }
+        else
+        {
+            s_id= Integer.parseInt(input_splited[2]);
+        }
+        int[] output = {s_day,e_day,p_id,c_id,s_id,r_id};
+        return output;
+    }
+    
+    public static void main(String[] args) {
+        Scanner scan = new Scanner(System.in);
+        int n = Integer.parseInt(scan.nextLine());
+        HashMap<Integer,ArrayList<OLXSoldItem>> map = new HashMap<Integer,ArrayList<OLXSoldItem>>();//day,OLXSoldItem
+        for(int i=0;i<n;i++)
+        {
+            String full_line = scan.nextLine();
+            if(full_line.charAt(0)=='S')
+            {
+                //sell line
+                int [] sell_line_data = parse_sell(full_line.substring(2));  //{day,p_id,c_id,s_id,r_id};
+                OLXSoldItem new_item = new OLXSoldItem(sell_line_data[1],sell_line_data[2],sell_line_data[3],sell_line_data[4]);
+                if(map.containsKey(sell_line_data[0]))
+                {
+                    //update map's day
+                    ArrayList<OLXSoldItem> old_value = map.get(sell_line_data[0]);
+                    old_value.add(new_item);
+                    map.put(sell_line_data[0],old_value);
+                }
+                else
+                {
+                    //new day
+                    ArrayList<OLXSoldItem> new_value = new ArrayList<OLXSoldItem>();
+                    new_value.add(new_item);
+                    map.put(sell_line_data[0],new_value);
+                }
+            }
+            else
+            {
+                //query
+                int[] query_line_data = parse_query(full_line.substring(2));//{s_day,e_day,p_id,c_id,s_id,r_id};
+                int start_day = query_line_data[0];
+                int end_day = query_line_data[1];//can be -1
+                if(end_day==-1)
+                {
+                  if(map.containsKey(start_day))
+                    {
+                        ArrayList<OLXSoldItem> day_items = map.get(start_day);
+                    System.out.println( query(day_items,query_line_data[2],query_line_data[3],query_line_data[4],query_line_data[5]));
+                    }
+                    else
+                    {
+                        System.out.println(0);
+                    }
+                }
+                else
+                {
+                    int total = 0;
+                    for(int k=start_day;k<=end_day;k++)
+                    {
+                        if(map.containsKey(k))
+                        {
+                            ArrayList<OLXSoldItem> day_items = map.get(k);
+                            total +=query(day_items,query_line_data[2],query_line_data[3],query_line_data[4],query_line_data[5]);
+                        }
+                    }
+                    System.out.println(total);
+                }
+            }
+        }
+    }
+}

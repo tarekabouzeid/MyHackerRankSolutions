@@ -1,0 +1,69 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+    
+    public static boolean is_open(char input_)
+	{
+		if(input_=='('||input_=='['||input_=='{')
+			return true;
+		else
+			return false;
+	}
+    
+   public static boolean isBalanced(String input_str) {
+	if(is_open(input_str.charAt(0))==false)
+		return false;
+	Stack<Character> parranthes_holder= new Stack<Character>();
+	for(int i = 0;i<=input_str.length()-1;i++)
+	{
+		char char_at = input_str.charAt(i);
+		switch(char_at)
+		{
+		case '(':
+		case '{':
+		case '[':
+		parranthes_holder.push(char_at);
+		break;
+		case ')':
+			if(parranthes_holder.isEmpty()||parranthes_holder.pop()!='(')
+			{
+				return false;
+			}
+			break;
+		case ']':
+			if(parranthes_holder.isEmpty()||parranthes_holder.pop()!='[')
+			{
+				return false;
+			}
+			break;
+		case '}':
+			if(parranthes_holder.isEmpty()||parranthes_holder.pop()!='{')
+			{
+				return false;
+			}
+			break;
+		default:
+			break;		
+		}
+	}
+	if(parranthes_holder.size()!=0)
+	{
+		return false;
+	}
+	return true;
+	
+    }
+  
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int t = in.nextInt();
+        for (int a0 = 0; a0 < t; a0++) {
+            String expression = in.next();
+            System.out.println( (isBalanced(expression)) ? "YES" : "NO" );
+        }
+    }
+}

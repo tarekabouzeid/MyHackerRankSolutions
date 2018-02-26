@@ -1,0 +1,57 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int arr[] = new int[n];
+        for(int arr_i=0; arr_i < n; arr_i++){
+            arr[arr_i] = in.nextInt();
+        }
+        boolean can_cut = true;
+        while(can_cut)
+            {
+            Arrays.sort(arr);
+            int cut_by = Integer.MAX_VALUE;
+            int cuts = 0;
+            int counter = 0 ;
+            for(int i =0;i<arr.length;i++)
+                {
+                if(arr[i]>0&&arr[i]<cut_by)
+                    {
+                    cut_by = arr[i];
+                }
+            }
+            
+            for(int i =0;i<arr.length;i++)
+                {
+                if(arr[i]>0)
+                    {
+                    arr[i] = arr[i]-cut_by;
+                    cuts= cuts+1;
+                }
+            }
+            
+            for(int i =0;i<arr.length;i++)
+                {
+                if(arr[i]<=0)
+                    {
+                    counter+=1;
+                }
+            }
+            if(counter==arr.length)
+                {
+                can_cut=false;
+            }
+            
+                System.out.println(cuts);
+              
+        }
+        
+    }
+}

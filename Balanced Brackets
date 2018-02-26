@@ -1,0 +1,64 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static boolean is_starting_paranethes(char x)
+	{
+		if(x=='('||x=='{'||x=='[')
+			return true;
+		else
+			return false;
+	}
+	public static boolean is_matching_pairs(char x,char y)
+	{
+		if(x=='('&&y==')')
+			return true;
+		else if(x=='{'&&y=='}')
+			return true;
+		else if(x=='['&&y==']')
+			return true;
+		else 
+			return false;
+	}
+	public static boolean is_balanced_brackets(String str)
+	{
+		if(str.length()%2!=0)
+			return false; 
+//		char [] str_arr = str.toCharArray();
+		Stack stack = new Stack<Character>();
+		//loop till middle if string and start getting elements 
+		boolean output = true;
+		for(int i=0;i<str.length();i++)
+		{
+			if(is_starting_paranethes(str.charAt(i)))
+				stack.push(str.charAt(i));
+			else
+			{
+				if(!stack.isEmpty())
+				{
+					char stack_element = (char) stack.pop();
+					output =  is_matching_pairs(stack_element, str.charAt(i));
+				}
+				else
+					output = false;
+			}
+			if(output==false)
+				break;
+		}
+        if(!stack.isEmpty())
+			output = false;
+		return output;
+	}
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int t = in.nextInt();
+        for(int a0 = 0; a0 < t; a0++){
+            String s = in.next();
+            System.out.println(is_balanced_brackets(s)?"YES":"NO");
+        }
+    }
+}

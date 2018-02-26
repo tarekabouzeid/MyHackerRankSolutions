@@ -1,0 +1,60 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    static String super_reduced_string(String s){
+        // Complete this function
+        while (true) {
+            // Used for loop termination
+            int len = s.length();
+            
+            // "(.)" is a capturing group that captures any character
+            // "\\1" is a backreference that will match the character captured by the first capturing group (i.e. the one captured by "(.)")
+            s = s.replaceAll("(.)\\1", "");
+            
+            // If no changes were made to string, break loop
+            if( s.length() == len ){
+                break;
+            }
+        }
+
+        return s.isEmpty() ? "Empty String" : s;
+        
+      /*  HashMap <Character,Integer> table = new HashMap<Character,Integer>();
+        for(int i=0;i<s.length();i++)
+        {
+            if(table.containsKey(s.charAt(i)))
+            {
+                int prev_value = table.get(s.charAt(i));
+                table.put(s.charAt(i),prev_value+1);
+            }
+            else
+            {
+                table.put(s.charAt(i),1);
+            }
+        }
+        //
+        String output ="";
+        for(Character i :table.keySet())
+        {
+            int value = table.get(i);
+            if(value%2!=0)
+                output+=i;
+        }
+        String output_rev="";
+        for(int i = output.length()-1;i>=0;i--)
+            output_rev+=output.charAt(i);
+        return output_rev!=""?output_rev:"Empty String";*/
+    }
+
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        String s = in.next();
+        String result = super_reduced_string(s);
+        System.out.println(result);
+    }
+}

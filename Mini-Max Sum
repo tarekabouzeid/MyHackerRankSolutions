@@ -1,0 +1,120 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void mergesort(int []array)
+    {
+        int [] helper = new int[array.length];
+        mergesort(array,helper,0,array.length-1);
+    }
+    public static void mergesort(int[] array,int[] helper,int low,int high)
+    {
+        if(low<high)
+        {
+            int mid = (low+high)/2;
+            mergesort(array,helper,low,mid);
+            mergesort(array,helper,mid+1,high);
+            merge(array,helper,low,mid,high);
+        }
+    }
+    public static void merge(int[]array,int[]helper,int low,int mid,int high)
+    {
+        //step 1 copy
+        for(int i=low;i<=high;i++)
+            helper[i]=array[i];
+        int helperleft = low;
+        int helperright = mid+1;
+        int current = low;
+        while(helperleft<=mid&&helperright<=high)
+        {
+            if(helper[helperleft]<=helper[helperright])
+            {
+                array[current] = helper[helperleft];
+                helperleft++;
+            }
+            else
+            {
+                array[current] = helper[helperright];
+                helperright++;
+            }
+            current++;
+        }
+        int remaining = mid-helperleft;
+        for(int i = 0 ;i<=remaining; i++)
+            array[current+i] = helper[helperleft+i];
+    }
+    
+    ///////
+    
+    
+    public static void mergesort_desc(int []array)
+    {
+        int [] helper = new int[array.length];
+        mergesort_desc(array,helper,0,array.length-1);
+    }
+    public static void mergesort_desc(int[] array,int[] helper,int low,int high)
+    {
+        if(low<high)
+        {
+            int mid = (low+high)/2;
+            mergesort_desc(array,helper,low,mid);
+            mergesort_desc(array,helper,mid+1,high);
+            merge_desc(array,helper,low,mid,high);
+        }
+    }
+    public static void merge_desc(int[]array,int[]helper,int low,int mid,int high)
+    {
+        //step 1 copy
+        for(int i=low;i<=high;i++)
+            helper[i]=array[i];
+        int helperleft = low;
+        int helperright = mid+1;
+        int current = low;
+        while(helperleft<=mid&&helperright<=high)
+        {
+            if(helper[helperleft]>=helper[helperright])
+            {
+                array[current] = helper[helperleft];
+                helperleft++;
+            }
+            else
+            {
+                array[current] = helper[helperright];
+                helperright++;
+            }
+            current++;
+        }
+        int remaining = mid-helperleft;
+        for(int i = 0 ;i<=remaining; i++)
+            array[current+i] = helper[helperleft+i];
+    }
+    
+    /////
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int[] arr = new int[5];
+        for(int arr_i=0; arr_i < 5; arr_i++){
+            arr[arr_i] = in.nextInt();
+        }
+        
+         BigInteger min_sum = BigInteger.valueOf(0);
+        BigInteger max_sum =  BigInteger.valueOf(0);
+        
+         mergesort(arr);
+        for(int arr_i=0; arr_i < 4; arr_i++){
+            min_sum= min_sum.add(BigInteger.valueOf(arr[arr_i])) ;
+        }
+       
+        mergesort_desc(arr);
+        for(int arr_i=0; arr_i < 4; arr_i++){
+            max_sum= max_sum.add(BigInteger.valueOf(arr[arr_i])) ;
+        }
+ 
+        System.out.println(min_sum+" "+max_sum);
+        
+    }
+}

@@ -1,0 +1,61 @@
+import java.util.*;
+
+public class Solution {
+    Map<String, Integer> magazineMap;
+    Map<String, Integer> noteMap;
+    
+    
+    
+    public static boolean solve(String magazine, String note) {
+         String []magazine_spl = magazine.split(" ");
+        String []note_spl     = note.split(" ");
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        boolean output = true;
+        for(int i = 0 ; i<magazine_spl.length;i++)
+            {
+            if(map.containsKey(magazine_spl[i]))
+                {
+                map.put(magazine_spl[i], map.get(magazine_spl[i]) + 1);
+            }
+            else
+                {
+                map.put(magazine_spl[i], 1);
+            }
+        }
+        
+        for(int i = 0 ; i<note_spl.length;i++)
+            {
+            if(!map.containsKey(note_spl[i]) ||map.get(note_spl[i])<=0)
+                {
+               // System.out.println(map.get(note_spl[i]));
+                output = false;
+               // break;
+            }
+            else
+                {
+                map.put(note_spl[i],map.get(note_spl[i]) - 1);
+            }
+        }
+        
+        return output;
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int m = scanner.nextInt();
+        int n = scanner.nextInt();
+        
+        // Eat whitespace to beginning of next line
+       
+        
+    //  System.out.println(scanner.nextLine());
+        //System.out.println();
+        scanner.nextLine();
+        
+        boolean answer =  solve(scanner.nextLine(), scanner.nextLine());
+        if(answer)
+            System.out.println("Yes");
+        else System.out.println("No");
+      
+    }
+}

@@ -1,0 +1,65 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void mergesort(int [] array)
+    {
+        int helper[]= new int[array.length];
+        mergesort(array,helper,0,array.length-1);
+    }
+    public static void mergesort(int[] array, int[] helper, int low,int high)
+    {
+        if(low<high)
+        {
+            int mid=(low+high)/2;
+            mergesort(array,helper,low,mid);
+            mergesort(array,helper,mid+1,high);
+            merge(array,helper,low,mid,high);
+        }
+    }
+    public static void merge(int[] array,int[] helper,int low, int mid, int high)
+    {
+        //step 1 copy
+        for(int i=low; i<=high;i++)
+            helper[i] = array[i];
+        int helperleft = low;
+        int helperright = mid+1;
+        int current =low;
+        while(helperleft<=mid&&helperright<=high)
+        {
+            if(helper[helperleft]<=helper[helperright])
+            {
+                array[current] = helper[helperleft];
+                helperleft++;
+            }
+            else
+            {
+                array[current] = helper[helperright];
+                helperright++;
+            }
+            current++;
+        }
+        int remaining = mid- helperleft;
+        for(int i=0;i<=remaining;i++)
+            array[current+i] = helper[helperleft+i];
+    }
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int[] a = new int[n];
+        for(int a_i=0; a_i < n; a_i++){
+            a[a_i] = in.nextInt();
+        }
+        // your code goes here
+        mergesort(a);
+        int diff = Integer.MAX_VALUE;
+        for(int i=0 ; i<n-1;i++)
+            if(Math.abs(a[i]-a[i+1])<diff)
+                diff = Math.abs(a[i]-a[i+1]);
+        System.out.println(diff);
+    }
+}

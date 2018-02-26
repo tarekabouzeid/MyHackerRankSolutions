@@ -1,0 +1,251 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+	public static char game[][]=new char [10][10];
+	public static char mySeed,oppSeed;
+	public static int x_pos_ultimate;
+	public static int y_pos_ultimate;
+	public static int flag=0; //0:new game
+	
+	
+	public static List<int[]> generateMoves() {
+
+	      List<int[]> nextMoves = new ArrayList<int[]>(); // allocate List
+	 
+	      if (hasWon(mySeed) || hasWon(oppSeed)) {
+	          return nextMoves;   // return empty list
+	       }
+	      for (int row = 0; row < 9; ++row) {
+	         for (int col = 0; col < 9; ++col) {
+	            if (game[row][col]=='-') {
+	               nextMoves.add(new int[] {row, col});
+	            }
+	         }
+	      }
+	      return nextMoves;
+	   }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	   public static int evaluateLine(int row1, int col1, int row2, int col2, int row3, int col3) {
+		      int score = 0;
+		 
+		      // First cell
+		      if (game[row1][col1]== mySeed) {
+		         score = 1;
+		      } else if (game[row1][col1]== oppSeed) {
+		         score = -1;
+		      }
+		 
+		      // Second cell
+		      if (game[row2][col2]== mySeed) {
+		         if (score == 1) {   // cell1 is mySeed
+		            score = 10;
+		         } else if (score == -1) {  // cell1 is oppSeed
+		            return 0;
+		         } else {  // cell1 is empty
+		            score = 1;
+		         }
+		      } else if (game[row2][col2]== oppSeed) {
+		         if (score == -1) { // cell1 is oppSeed
+		            score = -10;
+		         } else if (score == 1) { // cell1 is mySeed
+		            return 0;
+		         } else {  // cell1 is empty
+		            score = -1;
+		         }
+		      }
+		 
+		      // Third cell
+		      if (game[row3][col3]== mySeed) {
+		         if (score > 0) {  // cell1 and/or cell2 is mySeed
+		            score *= 10;
+		         } else if (score < 0) {  // cell1 and/or cell2 is oppSeed
+		            return 0;
+		         } else {  // cell1 and cell2 are empty
+		            score = 1;
+		         }
+		      } else if (game[row3][col3]== oppSeed) {
+		         if (score < 0) {  // cell1 and/or cell2 is oppSeed
+		            score *= 10;
+		         } else if (score > 1) {  // cell1 and/or cell2 is mySeed
+		            return 0;
+		         } else {  // cell1 and cell2 are empty
+		            score = -1;
+		         }
+		      }
+		      return score;
+		   }
+	
+	    public static  int evaluate() {
+		      int score = 0;
+		      // Evaluate score for each of the 8 lines (3 rows, 3 columns, 2 diagonals)
+		      score += evaluateLine((x_pos_ultimate*3)+0,(y_pos_ultimate*3)+0,(x_pos_ultimate*3)+ 0, (y_pos_ultimate*3)+ 1,(x_pos_ultimate*3)+ 0,(y_pos_ultimate*3)+ 2);  // row 0
+		      score += evaluateLine((x_pos_ultimate*3)+1,(y_pos_ultimate*3)+ 0,(x_pos_ultimate*3)+ 1,(y_pos_ultimate*3)+ 1,(x_pos_ultimate*3)+ 1,(y_pos_ultimate*3)+ 2);  // row 1
+		      score += evaluateLine((x_pos_ultimate*3)+2,(y_pos_ultimate*3)+ 0,(x_pos_ultimate*3)+ 2,(y_pos_ultimate*3)+ 1,(x_pos_ultimate*3)+ 2,(y_pos_ultimate*3)+ 2);  // row 2
+		      score += evaluateLine((x_pos_ultimate*3)+0,(y_pos_ultimate*3)+ 0,(x_pos_ultimate*3)+ 1,(y_pos_ultimate*3)+ 0,(x_pos_ultimate*3)+ 2,(y_pos_ultimate*3)+ 0);  // col 0
+		      score += evaluateLine((x_pos_ultimate*3)+0,(y_pos_ultimate*3)+ 1,(x_pos_ultimate*3)+ 1,(y_pos_ultimate*3)+ 1,(x_pos_ultimate*3)+ 2,(y_pos_ultimate*3)+ 1);  // col 1
+		      score += evaluateLine((x_pos_ultimate*3)+0,(y_pos_ultimate*3)+ 2,(x_pos_ultimate*3)+ 1,(y_pos_ultimate*3)+ 2,(x_pos_ultimate*3)+ 2,(y_pos_ultimate*3)+ 2);  // col 2
+		      score += evaluateLine((x_pos_ultimate*3)+0,(y_pos_ultimate*3)+ 0,(x_pos_ultimate*3)+ 1,(y_pos_ultimate*3)+ 1,(x_pos_ultimate*3)+ 2,(y_pos_ultimate*3)+ 2);  // diagonal
+		      score += evaluateLine((x_pos_ultimate*3)+0,(y_pos_ultimate*3)+ 2,(x_pos_ultimate*3)+ 1,(y_pos_ultimate*3)+ 1,(x_pos_ultimate*3)+ 2,(y_pos_ultimate*3)+ 0);  // alternate diagonal
+		      return score;
+		   }
+	
+	   
+	   
+	   public static boolean hasWon(char seed) {
+		   
+		   if	  (game[(x_pos_ultimate*3)+0][(y_pos_ultimate*3)+0]==seed&&game[(x_pos_ultimate*3)+0][(y_pos_ultimate*3)+1]==seed&&game[(x_pos_ultimate*3)+0][(y_pos_ultimate*3)+2]==seed)//r1
+		   {
+			   return true;
+		   }
+		   else if (game[(x_pos_ultimate*3)+1][(y_pos_ultimate*3)+0]==seed&&game[(x_pos_ultimate*3)+1][(y_pos_ultimate*3)+1]==seed&&game[(x_pos_ultimate*3)+1][(y_pos_ultimate*3)+2]==seed)//r2
+		   {
+			   return true;
+		   }
+		   else if (game[(x_pos_ultimate*3)+2][(y_pos_ultimate*3)+0]==seed&&game[(x_pos_ultimate*3)+2][(y_pos_ultimate*3)+1]==seed&&game[(x_pos_ultimate*3)+2][(y_pos_ultimate*3)+2]==seed)//r3
+		   {
+			   return true;
+		   }
+		   else if (game[(x_pos_ultimate*3)+0][(y_pos_ultimate*3)+0]==seed&&game[(x_pos_ultimate*3)+1][(y_pos_ultimate*3)+0]==seed&&game[(x_pos_ultimate*3)+2][(y_pos_ultimate*3)+0]==seed)//c1
+		   {
+			   return true;
+		   }
+		   else if (game[(x_pos_ultimate*3)+0][(y_pos_ultimate*3)+1]==seed&&game[(x_pos_ultimate*3)+1][(y_pos_ultimate*3)+1]==seed&&game[(x_pos_ultimate*3)+2][(y_pos_ultimate*3)+1]==seed)//c2
+		   {
+			   return true;
+		   }
+		   else if (game[(x_pos_ultimate*3)+0][(y_pos_ultimate*3)+2]==seed&&game[(x_pos_ultimate*3)+1][(y_pos_ultimate*3)+2]==seed&&game[(x_pos_ultimate*3)+2][(y_pos_ultimate*3)+2]==seed)//c3
+		   {
+			   return true;
+		   }
+		   else if (game[(x_pos_ultimate*3)+0][(y_pos_ultimate*3)+0]==seed&&game[(x_pos_ultimate*3)+1][(y_pos_ultimate*3)+1]==seed&&game[(x_pos_ultimate*3)+2][(y_pos_ultimate*3)+2]==seed)//d1
+		   {
+			   return true;
+		   }
+		   else if (game[(x_pos_ultimate*3)+0][(y_pos_ultimate*3)+2]==seed&&game[(x_pos_ultimate*3)+1][(y_pos_ultimate*3)+1]==seed&&game[(x_pos_ultimate*3)+2][(y_pos_ultimate*3)+0]==seed)//d2
+		   {
+			   return true;
+		   }
+		   return false;
+		   }
+	
+	
+	   
+	   public static int[] minimax(int depth,char seed)
+	   {
+		   List<int[]> nextMoves = generateMoves();
+		      int bestScore = (seed == mySeed) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+		      int currentScore;
+		      int bestRow = -1;
+		      int bestCol = -1;
+		      if (nextMoves.isEmpty() || depth == 0) {
+		          // Gameover or depth reached, evaluate score
+		          bestScore = evaluate();
+		       } else {
+		          for (int[] move : nextMoves) {
+		             // Try this move for the current "player"
+		             game[move[0]][move[1]]= seed;
+		             if (seed== mySeed) {  // mySeed (computer) is maximizing player
+		                currentScore = minimax(depth - 1, oppSeed)[0];
+		                if (currentScore > bestScore) {
+		                   bestScore = currentScore;
+		                   bestRow = move[0];
+		                   bestCol = move[1];
+		                }
+		             } else {  // oppSeed is minimizing player
+		                currentScore = minimax(depth - 1, mySeed)[0];
+		                if (currentScore < bestScore) {
+		                   bestScore = currentScore;
+		                   bestRow = move[0];
+		                   bestCol = move[1];
+		                }
+		             }
+		             // Undo move
+		             game[move[0]][move[1]]='-';
+		          }
+		       }
+		      bestRow=(int)bestRow%3;
+		      bestCol=(int)bestCol%3;
+		       return new int[] {bestScore, bestRow, bestCol};
+	   }
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	   
+	
+    public static void main(String[] args) {
+        /* Enter your code here. Read input from STDIN. Print output to STDOUT. Your class should be named Solution. */
+    
+    	Scanner sc = new Scanner (System.in);
+    	String max_player=sc.next();
+    	if(max_player=="O")
+    	{
+    		mySeed='O';
+    		oppSeed='X';
+    	}
+    	else
+    	{
+    		mySeed='X';
+    		oppSeed='O';
+    	}
+    	x_pos_ultimate=sc.nextInt();
+    	y_pos_ultimate=sc.nextInt(); 
+    	if (x_pos_ultimate==-1&&y_pos_ultimate==-1)
+    	{
+    		flag=1; //in_mid_game
+    	}
+    	for(int i=0;i<9;i++)
+    	{
+    		String temp=sc.next();
+    		for(int j=0;j<9;j++)
+    		{
+    			char []temp_cha=temp.toCharArray();
+    			game[i][j]=temp_cha[j];
+    		}
+    	}
+//    	System.out.println(game[9][9]);
+    	
+    	int []result={0,0,0};
+    	if(flag==1)
+    	{
+    		outerloop:
+    	    for(int i=0;i<9;i++)
+    	    {
+    	    	for(int j=0;j<9;j++)
+    	    	{
+    	    		if(game[i][j]=='-')
+    	    		{
+    	    			System.out.println( (int) i/3+" "+(int) j/3+" "+i%3+ " "+j%3+ " ");
+    	    			break outerloop;
+    	    		}
+    	    	}
+    	    }
+    	}
+    	
+    	
+    	else //the main game algorithm and strategy
+    	{
+    		result=minimax(2, mySeed);
+        	System.out.println(x_pos_ultimate+" "+y_pos_ultimate+" "+result[1]+" "+result[2]);
+
+    	}
+    }
+}

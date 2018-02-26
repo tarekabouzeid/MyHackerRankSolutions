@@ -1,0 +1,74 @@
+import java.io.*;
+import java.util.*;
+import java.text.*;
+import java.math.*;
+import java.util.regex.*;
+
+public class Solution {
+
+    public static void mergesort_desc(int[] array)
+    {
+        int []helper = new int[array.length];
+        mergesort_desc(array,helper,0,array.length-1);
+    }
+    public static void mergesort_desc(int[]array,int[] helper,int low,int high)
+    {
+        if(low<high)
+        {
+            int mid =  (low+high)/2;
+            mergesort_desc(array,helper,low,mid);
+            mergesort_desc(array,helper,mid+1,high);
+            merge_desc(array,helper,low,mid,high);
+        }
+    }
+    public static void merge_desc(int[] array,int[] helper, int low,int mid , int high)
+    {
+        //step 1 copy
+        for(int i=low ; i<=high;i++)
+            helper[i] = array[i];
+        int helperleft = low;
+        int helperright = mid+1;
+        int current = low;
+        while(helperleft<=mid&&helperright<=high)
+        {
+            if(helper[helperleft]>=helper[helperright])
+            {
+                array[current] = helper[helperleft];
+                helperleft++;
+            }
+            else
+            {
+                array[current] = helper[helperright];
+                helperright++;
+            }
+            current++;
+        }
+        int remaining = mid-helperleft;
+        for(int i= 0 ; i<=remaining;i++)
+            array[current+i] = helper[helperleft+i];
+    }
+    
+    
+    static int birthdayCakeCandles(int n, int[] ar) {
+        mergesort_desc(ar);
+        int max_height = ar[0];
+        int counter =0;
+        for(int i= 0; i<ar.length;i++)
+        {
+            if(ar[i]>=max_height)
+                counter++;
+        }
+        return counter;
+    }
+    
+    public static void main(String[] args) {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt();
+        int[] ar = new int[n];
+        for(int ar_i = 0; ar_i < n; ar_i++){
+            ar[ar_i] = in.nextInt();
+        }
+        int result = birthdayCakeCandles(n, ar);
+        System.out.println(result);
+    }
+}
